@@ -30,6 +30,8 @@ entrypoints==0.3
     # via nbconvert
 flake8==3.9.2
     # via -r requirements.in
+greenlet==1.1.0
+    # via sqlalchemy
 ipykernel==5.5.5
     # via
     #   ipywidgets
@@ -194,6 +196,8 @@ six==1.16.0
     #   jsonschema
     #   python-dateutil
 sklearn==0.0
+    # via -r requirements.in
+sqlalchemy==1.4.17
     # via -r requirements.in
 terminado==0.10.0
     # via notebook

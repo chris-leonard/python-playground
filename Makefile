@@ -2,10 +2,6 @@
 venv:
 	python3 -m venv env
 
-# Jupyter notebook
-notebook:
-	jupyter notebook
-
 # Dependencies
 deps-pre:
 	pip install pip-tools
