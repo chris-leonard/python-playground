@@ -1,2 +1,6 @@
 # virtual env
 /env
+
+# test databases
+sqlalchemy/college.db
+sqlalchemy/sales.db

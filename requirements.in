@@ -1,10 +1,13 @@
 # pydata stack 
-jupyter
 pandas
 numpy
 matplotlib
 scipy
 sklearn
+
+# notebooks
+jupyter
+jupytext # converts notebook to python script
 
 # connecting with databases
 sqlalchemy
