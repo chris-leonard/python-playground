@@ -108,6 +108,7 @@ meta.create_all(engine)
 # **SQL expressions:** Constructed by using methods on tables
 # - Print corresponding SQL code using `str(<exp>)` (doesn't store specific values)
 # - Specific values are stored in bind parameter which is visible in compiled form - access using `.compile().params`
+# - Insert bound parameters into query using `.compile(compile_kwargs={"literal_binds": True})`
 #
 # **Connection:** Represents an active *DBAPI* (Python Database API) connection
 # - Run expressions by passing to `execute(<exp>)` method on connection
@@ -122,6 +123,9 @@ print(str(ins))
 
 # Access specific parameters
 print(ins.compile().params)
+
+# Parameters in Query
+print(ins.compile(compile_kwargs={"literal_binds": True}))
 
 # %%
 # Create connection to database
@@ -197,6 +201,7 @@ result.fetchall()
 # **Where:** Use `.where()` method on `select` and pass column conditions
 # - Use `where(_and(<cond1>, <cond2>))` for multiple conditions
 # - Use `where(between(<col>, <val1>, <val2>)` for between
+# - Use `table.c.column.is_(True)` for `IS true`, `.is_(None)` for `IS NULL`, and `.isnot(None)` for `IS NOT NULL`
 
 # %%
 # Select first 3 rows
@@ -278,6 +283,9 @@ for row in result:
 #
 # **Functions:** Standard SQL functions are accessed through `func`
 # - Ex: `func.now()`, `func.count()`, `func.max()`
+#
+# **Generate Series:** Accessed by `func.generate_series(<start>, <stop>, <interval>)`
+# - Acts a little strangely because it is both a table and a column of that table: use `.column` method to refer to the *column*
 
 # %%
 # Variable st represents students table aliased as 'a'
@@ -301,6 +309,13 @@ print(str(s))
 # %%
 # Count rows in table
 s = select(func.count(students.c.id))
+print(str(s))
+
+# %%
+# Generate series
+# SQLite doesn't support generate_series by default so can't actually run this
+gs = func.generate_series(1, 10, 1).alias('num')
+s = select(gs.column).select_from(gs)
 print(str(s))
 
 # %% [markdown]
@@ -470,7 +485,7 @@ session.commit()
 # - Limit columns by passing specific column attributes as argument of `query()`
 # - Rename columns using `label()` method on columns
 # - Can call `str(<query>)` to get equivalent SQL statement
-# - Convert to equivalent Core Select object via `statement` attribute
+# - Convert to equivalent Core Select object via `statement` attribute - then use compile to get params
 #
 # **Accessing Results:**
 # - *Directly:* Query objects are iterable with items corresponding to rows
@@ -531,6 +546,10 @@ result = q.all()
 # Equivalent Select object
 q = session.query(Customers)
 type(q.statement)
+
+# %%
+# Query with parameters by compile select object
+print(q.statement.compile(compile_kwargs={"literal_binds": True}))
 
 # %%
 # Customer with id = 2
