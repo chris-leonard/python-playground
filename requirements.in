@@ -1,16 +1,21 @@
-# pydata stack 
+# pydata stack
 pandas
 numpy
 matplotlib
 scipy
-sklearn
+scikit-learn
+seaborn
 
 # notebooks
 jupyter
 jupytext # converts notebook to python script
+jupyterlab
+jupyterlab-code-formatter
+ipywidgets
 
 # connecting with databases
 sqlalchemy
 
-# linting
-flake8
+# code formatting
+black
+isort
