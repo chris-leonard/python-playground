@@ -3,59 +3,71 @@ import pandas as pd
 from matplotlib import pyplot as plt
 
 
-def plot_cumulative_accuracy_profile(classifier, X, y, method="predict", normalised=True):
-    """Plot CAP for trained binary classifier
+def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
+    """Plot Cumulative Accuracy Profile (CAP) curve for trained binary classifier
 
     :param classifier: trained sklearn binary classifier
     :param X: numpy array of input data
     :param y: numpy array of binary labels
     :param method: classifier method used to order labels ('predict' or 'predict_proba')
+    :param normalised: bool, should the axes be scaled to range [0, 1]
     """
-    # generate cumulative accuracy data
-    perfect_cumulative_accuracy = get_perfect_cumulative_accuracy(y=y, normalised=normalised)
-    classifier_cumulative_accuracy = get_classifier_cumulative_accuracy(
+    # generate cumulative positive outputs for classifier and a perfect classifier
+    perfect_cumulative_positive_outputs = get_perfect_cumulative_positive_outputs(y=y)
+    classifier_cumulative_positive_outputs = get_classifier_cumulative_positive_outputs(
         classifier=classifier,
         X=X,
         y=y,
-        method=method, normalised=normalised
+        method=method
     )
+
+    samples_count = len(y)
+    positive_samples_count = y.sum()
+
+    # generate data for plotting
+    x_plot = np.arange(0, samples_count + 1)
+
+    y_classifier_plot = classifier_cumulative_positive_outputs
+    y_perfect_plot = perfect_cumulative_positive_outputs
+    y_random_plot = np.linspace(0, positive_samples_count, samples_count + 1)
+
+    # rescale to [0, 1]
+    if normalised:
+        x_plot = x_plot / samples_count
+
+        y_classifier_plot = y_classifier_plot / positive_samples_count
+        y_perfect_plot = y_perfect_plot / positive_samples_count
+        y_random_plot = y_random_plot / positive_samples_count
 
     # plot curves
     fig, ax = plt.subplots()
 
-    sample_count = len(y)
-    if normalised:
-        x_plot = np.linspace(0, 1, sample_count + 1)
-        x_plot = x_plot[1:]
-    else:
-        x_plot = np.arange(1, sample_count + 1)
-
-    ax.plot(x_plot, classifier_cumulative_accuracy, label="Classifier")
-    ax.plot(x_plot, perfect_cumulative_accuracy, ls="--", label="Perfect")
-
-    plot_random_cumulative_accuracy(y, ax=ax, normalised=normalised)
+    ax.plot(x_plot, y_classifier_plot, label="Classifier")
+    ax.plot(x_plot, y_perfect_plot, ls="--", label="Perfect")
+    ax.plot(x_plot, y_random_plot, ls="--", color="k", label="Random")
 
     # clean up figure
     if normalised:
         ax.set_xlabel("Proportion of Samples")
-        ax.set_ylabel("Cumulative Accuracy")
+        ax.set_ylabel("Proportion Classified Positive")
     else:
         ax.set_xlabel("Samples Count")
         ax.set_ylabel("Classified Positive Count")
 
-    ax.set_title("Cumulative Accuracy Profile (CAP)")
+    ax.set_title("Cumulative Accuracy Profile (CAP) Curve")
 
     ax.legend(title="Model")
 
 
-def get_classifier_cumulative_accuracy(classifier, X, y, method="predict", normalised=True):
-    """Cumulative accuracy for trained binary classifier
+def get_classifier_cumulative_positive_outputs(classifier, X, y, method="predict"):
+    """Running total of samples classified positive when put in decreasing order by prediction method
 
     :param classifier: trained sklearn binary classifier
     :param X: numpy array of input data
     :param y: numpy array of binary labels
     :param method: classifier method used to order labels ('predict' or 'predict_proba')
-    :return: cumulative_accuracy: Series with index number of samples and value number of positive samples
+    :return: cumulative_positive_outputs: numpy array with index number of samples and value number of positive samples
+        classified positive, length len(y)+1
     """
     if method == "predict":
         classifier_output = classifier.predict(X)
@@ -65,51 +77,29 @@ def get_classifier_cumulative_accuracy(classifier, X, y, method="predict", norma
     else:
         raise ValueError("method should be either 'predict' or 'predict_proba'")
 
+    # order labels according to classifier output
     output_with_labels = pd.DataFrame(data={"classifier_output": classifier_output, "label": y})
     output_with_labels = output_with_labels.sort_values(["classifier_output", "label"], ascending=False)
 
-    cumulative_accuracy = output_with_labels.label.cumsum(axis=0).values
+    # calculate running total - add a 0 at the start
+    cumulative_positive_outputs = output_with_labels.label.cumsum(axis=0).values
+    cumulative_positive_outputs = np.concatenate(([0], cumulative_positive_outputs))
 
-    if normalised:
-        positive_sample_count = y.sum()
-        return cumulative_accuracy / positive_sample_count
-    else:
-        return cumulative_accuracy
+    return cumulative_positive_outputs
 
 
-def get_perfect_cumulative_accuracy(y, normalised=True):
-    """Cumulative accuracy for a perfect model with labels y
+def get_perfect_cumulative_positive_outputs(y):
+    """Running total of samples classified positive for a perfect model with labels y
 
     :param y: numpy array of binary labels
-    :return: cumulative_accuracy: Series with index number of samples and value number of positive samples
+    :return: cumulative_positive_outputs: numpy array with index number of samples and value number of positive samples
+        classified positive, length len(y)+1
     """
+    # order labels with 1s before 0s
     y_sorted = np.sort(y)[::-1]
-    cumulative_accuracy = y_sorted.cumsum()
 
-    if normalised:
-        positive_sample_count = y.sum()
-        return cumulative_accuracy / positive_sample_count
-    else:
-        return cumulative_accuracy
+    # calculate running total - add a 0 at the start
+    cumulative_positive_outputs = y_sorted.cumsum()
+    cumulative_positive_outputs = np.concatenate(([0], cumulative_positive_outputs))
 
-
-def plot_random_cumulative_accuracy(y, ax=None, normalised=True):
-    """Plots expected cumulative accuracy for a random model with labels y
-
-    :param y: numpy array of binary labels
-    :param ax: matplotlib axis, if null a new plot is created
-    """
-    if ax is None:
-        fig, ax = plt.subplots()
-
-    if normalised:
-        x_plot = [0, 1]
-        y_plot = [0, 1]
-    else:
-        sample_count = len(y)
-        positive_sample_count = y.sum()
-
-        x_plot = [0, sample_count]
-        y_plot = [0, positive_sample_count]
-
-    ax.plot(x_plot, y_plot, ls="--", color="k", label="Random")
+    return cumulative_positive_outputs
