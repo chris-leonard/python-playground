@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from sklearn import Estimator
 
 
 def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
