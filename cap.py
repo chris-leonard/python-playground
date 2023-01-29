@@ -1,24 +1,27 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from sklearn import Estimator
 
 
 def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
     """Plot Cumulative Accuracy Profile (CAP) curve for trained binary classifier
 
     :param classifier: trained sklearn binary classifier
-    :param X: numpy array of input data
-    :param y: numpy array of binary labels
+    :param X: input data
+    :type X: np.ndarray
+    :param y: binary labels
+    :type y: np.ndarray
     :param method: classifier method used to order labels ('predict' or 'predict_proba')
-    :param normalised: bool, should the axes be scaled to range [0, 1]
+    :type method: str
+    :param normalised: should the axes be scaled to range [0, 1]
+    :type X: bool
+    :return: None
     """
     # generate cumulative positive outputs for classifier and a perfect classifier
     perfect_cumulative_positive_outputs = get_perfect_cumulative_positive_outputs(y=y)
     classifier_cumulative_positive_outputs = get_classifier_cumulative_positive_outputs(
-        classifier=classifier,
-        X=X,
-        y=y,
-        method=method
+        classifier=classifier, X=X, y=y, method=method
     )
 
     samples_count = len(y)
@@ -64,10 +67,13 @@ def get_classifier_cumulative_positive_outputs(classifier, X, y, method="predict
 
     :param classifier: trained sklearn binary classifier
     :param X: numpy array of input data
+    :type X: np.ndarray
     :param y: numpy array of binary labels
+    :type y: np.ndarray
     :param method: classifier method used to order labels ('predict' or 'predict_proba')
-    :return: cumulative_positive_outputs: numpy array with index number of samples and value number of positive samples
-        classified positive, length len(y)+1
+    :type method: str
+    :return:  index is number of samples and value number of positive samples classified positive, length len(y)+1
+    :rtype: np.ndarray
     """
     if method == "predict":
         classifier_output = classifier.predict(X)
@@ -78,8 +84,12 @@ def get_classifier_cumulative_positive_outputs(classifier, X, y, method="predict
         raise ValueError("method should be either 'predict' or 'predict_proba'")
 
     # order labels according to classifier output
-    output_with_labels = pd.DataFrame(data={"classifier_output": classifier_output, "label": y})
-    output_with_labels = output_with_labels.sort_values(["classifier_output", "label"], ascending=False)
+    output_with_labels = pd.DataFrame(
+        data={"classifier_output": classifier_output, "label": y}
+    )
+    output_with_labels = output_with_labels.sort_values(
+        ["classifier_output", "label"], ascending=False
+    )
 
     # calculate running total - add a 0 at the start
     cumulative_positive_outputs = output_with_labels.label.cumsum(axis=0).values
@@ -92,8 +102,9 @@ def get_perfect_cumulative_positive_outputs(y):
     """Running total of samples classified positive for a perfect model with labels y
 
     :param y: numpy array of binary labels
-    :return: cumulative_positive_outputs: numpy array with index number of samples and value number of positive samples
-        classified positive, length len(y)+1
+    :type y: np.ndarray
+    :return: index is number of samples and value number of positive samples classified positive, length len(y)+1
+    :rtype: np.ndarray
     """
     # order labels with 1s before 0s
     y_sorted = np.sort(y)[::-1]
