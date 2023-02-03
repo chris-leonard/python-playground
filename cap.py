@@ -50,13 +50,13 @@ def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
 
     # clean up figure
     if normalised:
-        ax.set_xlabel("Proportion of Samples")
-        ax.set_ylabel("Proportion Classified Positive")
+        ax.set_title("Normalised Cumulative Accuracy Profile (CAP) Curve")
+        ax.set_xlabel("Proportion Classified Positive")
+        ax.set_ylabel("True Positive Rate")
     else:
-        ax.set_xlabel("Samples Count")
-        ax.set_ylabel("Classified Positive Count")
-
-    ax.set_title("Cumulative Accuracy Profile (CAP) Curve")
+        ax.set_title("Cumulative Accuracy Profile (CAP) Curve")
+        ax.set_xlabel("Classified Positive Count")
+        ax.set_ylabel("True Positives Count")
 
     ax.legend(title="Model")
 
@@ -113,3 +113,31 @@ def get_perfect_cumulative_positive_outputs(y):
     cumulative_positive_outputs = np.concatenate(([0], cumulative_positive_outputs))
 
     return cumulative_positive_outputs
+
+
+def transform_cap_to_roc(cap_values):
+    """Maps an array of values defining a (un-normalised) CAP curve to values defining the (un-normalised) ROC curve
+
+    :param cap_values: (n, 2) array of x and y values defining a CAP curve
+    :type cap_values: np.ndarray
+    :return: (n, 2) array of x and y values defining an ROC curve
+    :rtype: np.ndarray
+    """
+    cap_to_roc_linear_transformation = np.array([[1, -1], [0, 1]])
+    roc_values = cap_values @ cap_to_roc_linear_transformation.T
+
+    return roc_values
+
+
+def transform_roc_to_cap(roc_values):
+    """Maps an array of values defining a (un-normalised) ROC curve to values defining the (un-normalised) CAP curve
+
+    :param roc_values: (n, 2) array of x and y values defining an ROC curve
+    :type roc_values: np.ndarray
+    :return: (n, 2) array of x and y values defining a CAP curve
+    :rtype: np.ndarray
+    """
+    roc_to_cap_linear_transformation = np.array([[1, 1], [0, 1]])
+    cap_values = roc_values @ roc_to_cap_linear_transformation.T
+
+    return cap_values

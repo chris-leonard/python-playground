@@ -46,7 +46,7 @@ def get_precision(y_pred, y_true):
 
 
 def get_true_positive_rate(y_pred, y_true):
-    """False positive rate for a binary classifier
+    """True positive rate for a binary classifier
 
     :param y_pred: predicted binary classes
     :type y_pred: np.ndarray
