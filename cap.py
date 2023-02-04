@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from scipy.integrate import trapezoid
 
 
 def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
@@ -14,7 +15,7 @@ def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
     :param method: classifier method used to order labels ('predict' or 'predict_proba')
     :type method: str
     :param normalised: should the axes be scaled to range [0, 1]
-    :type X: bool
+    :type normalised: bool
     :return: None
     """
     # generate cumulative positive outputs for classifier and a perfect classifier
@@ -59,6 +60,53 @@ def plot_cap_curve(classifier, X, y, method="predict", normalised=True):
         ax.set_ylabel("True Positives Count")
 
     ax.legend(title="Model")
+
+
+def get_accuracy_ratio(classifier, X, y, method):
+    """The accuracy ratio for a binary classifier
+
+    :param classifier: trained sklearn binary classifier
+    :param X: input data
+    :type X: np.ndarray
+    :param y: binary labels
+    :type y: np.ndarray
+    :param method: classifier method used to order labels ('predict' or 'predict_proba')
+    :type method: str
+    :return: accuracy_ratio: ratio of the area between the classifier's CAP curve and that of a random model, to the
+        area between a perfect model's CAP curve and that of a random model
+    :rtype: float
+    """
+    samples_count = len(y)
+    positive_samples_count = y.sum()
+
+    # cap curve x-values
+    x_vals = np.arange(0, samples_count + 1)
+
+    # cap curve y-values for each model
+    perfect_cumulative_positive_outputs = get_perfect_cumulative_positive_outputs(y)
+    classifier_cumulative_positive_outputs = (
+        get_classifier_cumulative_positive_outputs(classifier, X, y, method)
+    )
+    random_cumulative_positive_outputs = np.linspace(
+        0, positive_samples_count, samples_count + 1
+    )
+
+    # areas under cap curves using trapezoid rule
+    area_under_perfect_cap_curve = trapezoid(
+        y=perfect_cumulative_positive_outputs, x=x_vals
+    )
+    area_under_classifier_cap_curve = trapezoid(
+        y=classifier_cumulative_positive_outputs, x=x_vals
+    )
+    area_under_random_cap_curve = trapezoid(
+        y=random_cumulative_positive_outputs, x=x_vals
+    )
+
+    # calculate accuracy ratio
+    accuracy_ratio = area_under_classifier_cap_curve - area_under_random_cap_curve
+    accuracy_ratio /= area_under_perfect_cap_curve - area_under_random_cap_curve
+
+    return accuracy_ratio
 
 
 def get_classifier_cumulative_positive_outputs(classifier, X, y, method="predict"):
