@@ -84,8 +84,8 @@ def get_accuracy_ratio(classifier, X, y, method):
 
     # cap curve y-values for each model
     perfect_cumulative_positive_outputs = get_perfect_cumulative_positive_outputs(y)
-    classifier_cumulative_positive_outputs = (
-        get_classifier_cumulative_positive_outputs(classifier, X, y, method)
+    classifier_cumulative_positive_outputs = get_classifier_cumulative_positive_outputs(
+        classifier, X, y, method
     )
     random_cumulative_positive_outputs = np.linspace(
         0, positive_samples_count, samples_count + 1
