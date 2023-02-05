@@ -14,3 +14,6 @@ __pycache__/
 
 # describes how to visualise folders in finder #
 .DS_Store
+
+# pycharm project settings
+.idea/
