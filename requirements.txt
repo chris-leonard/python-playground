@@ -8,6 +8,10 @@
 --extra-index-url https://pypi.python.org/simple/
 --trusted-host pypi.iwoca.co.uk
 
+aiofiles==22.1.0
+    # via ypy-websocket
+aiosqlite==0.18.0
+    # via ypy-websocket
 anyio==3.6.2
     # via jupyter-server
 appnope==0.1.3
@@ -31,11 +35,11 @@ babel==2.11.0
     # via jupyterlab-server
 backcall==0.2.0
     # via ipython
-beautifulsoup4==4.11.1
+beautifulsoup4==4.11.2
     # via nbconvert
-black==22.12.0
+black==23.1.0
     # via -r requirements.in
-bleach==5.0.1
+bleach==6.0.0
     # via nbconvert
 certifi==2022.12.7
     # via requests
@@ -51,14 +55,12 @@ contourpy==1.0.7
     # via matplotlib
 cycler==0.11.0
     # via matplotlib
-debugpy==1.6.5
+debugpy==1.6.6
     # via ipykernel
 decorator==5.1.1
     # via ipython
 defusedxml==0.7.1
     # via nbconvert
-entrypoints==0.4
-    # via jupyter-client
 executing==1.2.0
     # via stack-data
 fastjsonschema==2.16.2
@@ -72,7 +74,7 @@ idna==3.4
     #   anyio
     #   jsonschema
     #   requests
-ipykernel==6.20.2
+ipykernel==6.21.1
     # via
     #   ipywidgets
     #   jupyter
@@ -80,7 +82,7 @@ ipykernel==6.20.2
     #   nbclassic
     #   notebook
     #   qtconsole
-ipython==8.8.0
+ipython==8.10.0
     # via
     #   ipykernel
     #   ipywidgets
@@ -97,7 +99,7 @@ ipywidgets==8.0.4
     #   jupyter
 isoduration==20.11.0
     # via jsonschema
-isort==5.11.4
+isort==5.12.0
     # via -r requirements.in
 jedi==0.18.2
     # via ipython
@@ -122,7 +124,7 @@ jsonschema[format-nongpl]==4.17.3
     #   nbformat
 jupyter==1.0.0
     # via -r requirements.in
-jupyter-client==7.4.9
+jupyter-client==8.0.2
     # via
     #   ipykernel
     #   jupyter-console
@@ -131,11 +133,13 @@ jupyter-client==7.4.9
     #   nbclient
     #   notebook
     #   qtconsole
-jupyter-console==6.4.4
+jupyter-console==6.5.0
     # via jupyter
-jupyter-core==5.1.3
+jupyter-core==5.2.0
     # via
+    #   ipykernel
     #   jupyter-client
+    #   jupyter-console
     #   jupyter-server
     #   jupyterlab
     #   nbclassic
@@ -144,17 +148,28 @@ jupyter-core==5.1.3
     #   nbformat
     #   notebook
     #   qtconsole
-jupyter-events==0.6.3
-    # via jupyter-server
-jupyter-server==2.1.0
+jupyter-events==0.5.0
     # via
+    #   jupyter-server
+    #   jupyter-server-fileid
+jupyter-server==2.2.1
+    # via
+    #   jupyter-server-fileid
     #   jupyterlab
     #   jupyterlab-server
     #   nbclassic
     #   notebook-shim
+jupyter-server-fileid==0.6.0
+    # via jupyter-server-ydoc
 jupyter-server-terminals==0.4.4
     # via jupyter-server
-jupyterlab==3.5.2
+jupyter-server-ydoc==0.6.1
+    # via jupyterlab
+jupyter-ydoc==0.2.2
+    # via
+    #   jupyter-server-ydoc
+    #   jupyterlab
+jupyterlab==3.6.1
     # via
     #   -r requirements.in
     #   jupyterlab-code-formatter
@@ -190,17 +205,17 @@ mdit-py-plugins==0.3.3
     # via jupytext
 mdurl==0.1.2
     # via markdown-it-py
-mistune==2.0.4
+mistune==2.0.5
     # via nbconvert
-mypy-extensions==0.4.3
+mypy-extensions==1.0.0
     # via black
-nbclassic==0.4.8
+nbclassic==0.5.1
     # via
     #   jupyterlab
     #   notebook
 nbclient==0.7.2
     # via nbconvert
-nbconvert==7.2.8
+nbconvert==7.2.9
     # via
     #   jupyter
     #   jupyter-server
@@ -217,7 +232,6 @@ nbformat==5.7.3
 nest-asyncio==1.5.6
     # via
     #   ipykernel
-    #   jupyter-client
     #   nbclassic
     #   notebook
 notebook==6.5.2
@@ -226,17 +240,20 @@ notebook==6.5.2
     #   jupyterlab
 notebook-shim==0.2.2
     # via nbclassic
-numpy==1.24.1
+numpy==1.24.2
     # via
     #   -r requirements.in
     #   contourpy
     #   matplotlib
     #   pandas
+    #   patsy
     #   scikit-learn
     #   scipy
     #   seaborn
+    #   statsmodels
 packaging==23.0
     # via
+    #   black
     #   ipykernel
     #   jupyter-server
     #   jupyterlab
@@ -244,27 +261,31 @@ packaging==23.0
     #   matplotlib
     #   nbconvert
     #   qtpy
+    #   statsmodels
 pandas==1.5.3
     # via
     #   -r requirements.in
     #   seaborn
+    #   statsmodels
 pandocfilters==1.5.0
     # via nbconvert
 parso==0.8.3
     # via jedi
-pathspec==0.10.3
+pathspec==0.11.0
     # via black
+patsy==0.5.3
+    # via statsmodels
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
 pillow==9.4.0
     # via matplotlib
-platformdirs==2.6.2
+platformdirs==3.0.0
     # via
     #   black
     #   jupyter-core
-prometheus-client==0.15.0
+prometheus-client==0.16.0
     # via
     #   jupyter-server
     #   nbclassic
@@ -312,6 +333,7 @@ pyzmq==25.0.0
     # via
     #   ipykernel
     #   jupyter-client
+    #   jupyter-console
     #   jupyter-server
     #   nbclassic
     #   notebook
@@ -323,19 +345,16 @@ qtpy==2.3.0
 requests==2.28.2
     # via jupyterlab-server
 rfc3339-validator==0.1.4
-    # via
-    #   jsonschema
-    #   jupyter-events
+    # via jsonschema
 rfc3986-validator==0.1.1
-    # via
-    #   jsonschema
-    #   jupyter-events
-scikit-learn==1.2.0
+    # via jsonschema
+scikit-learn==1.2.1
     # via -r requirements.in
 scipy==1.10.0
     # via
     #   -r requirements.in
     #   scikit-learn
+    #   statsmodels
 seaborn==0.12.2
     # via -r requirements.in
 send2trash==1.8.0
@@ -347,16 +366,19 @@ six==1.16.0
     # via
     #   asttokens
     #   bleach
+    #   patsy
     #   python-dateutil
     #   rfc3339-validator
 sniffio==1.3.0
     # via anyio
 soupsieve==2.3.2.post1
     # via beautifulsoup4
-sqlalchemy==1.4.46
+sqlalchemy==2.0.3
     # via -r requirements.in
 stack-data==0.6.2
     # via ipython
+statsmodels==0.13.5
+    # via -r requirements.in
 terminado==0.17.1
     # via
     #   jupyter-server
@@ -382,13 +404,14 @@ tornado==6.2
     #   nbclassic
     #   notebook
     #   terminado
-traitlets==5.8.1
+traitlets==5.9.0
     # via
     #   comm
     #   ipykernel
     #   ipython
     #   ipywidgets
     #   jupyter-client
+    #   jupyter-console
     #   jupyter-core
     #   jupyter-events
     #   jupyter-server
@@ -399,6 +422,8 @@ traitlets==5.8.1
     #   nbformat
     #   notebook
     #   qtconsole
+typing-extensions==4.4.0
+    # via sqlalchemy
 uri-template==1.2.0
     # via jsonschema
 urllib3==1.26.14
@@ -411,7 +436,13 @@ webencodings==0.5.1
     # via
     #   bleach
     #   tinycss2
-websocket-client==1.4.2
+websocket-client==1.5.1
     # via jupyter-server
 widgetsnbextension==4.0.5
     # via ipywidgets
+y-py==0.5.5
+    # via
+    #   jupyter-ydoc
+    #   ypy-websocket
+ypy-websocket==0.8.2
+    # via jupyter-server-ydoc
