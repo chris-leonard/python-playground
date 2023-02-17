@@ -5,6 +5,7 @@ matplotlib
 scipy
 scikit-learn
 seaborn
+statsmodels
 
 # notebooks
 jupyter
