@@ -1,0 +1,6 @@
+hello-world.sh
+shell-scripting.ipynb
+stderr.txt
+stdout.txt
+[31mtask.sh[m[m
+hello
