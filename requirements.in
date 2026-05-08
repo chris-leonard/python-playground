@@ -19,3 +19,7 @@ sqlalchemy
 
 # code formatting
 ruff
+
+# GLMs
+glum
+typing_extensions>=4.5.0  # glum requires deprecated, added in 4.5
