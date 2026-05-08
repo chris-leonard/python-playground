@@ -1,15 +1,13 @@
-# Virtual environment
-venv:
-	python3 -m venv env
+# Environment
+env-create:
+	conda env create -f conda.yml
+
+env-update:
+	conda env update -f conda.yml --prune
 
 # Dependencies
 deps-pre:
 	pip install pip-tools
 
-deps-compile:
-	pip-compile requirements.in
-
-deps-install:
-	pip-sync
-
-install: deps-pre deps-install
+deps-compile: deps-pre
+	pip-compile --resolver=backtracking requirements.in

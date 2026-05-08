@@ -1,0 +1,7 @@
+name: python-playground
+dependencies:
+  - python==3.10
+  - ipykernel
+  - pip
+  - pip:
+    - -r requirements.txt

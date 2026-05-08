@@ -18,5 +18,4 @@ ipywidgets
 sqlalchemy
 
 # code formatting
-black
-isort
+ruff

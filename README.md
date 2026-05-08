@@ -13,7 +13,6 @@ cd python-playground
 Then, to set up the environment, type:
 
 ``` bash
-make venv
-source env/bin/activate
-make install
+make env-create
+conda activate python-playground
 ```
